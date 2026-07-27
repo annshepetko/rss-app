@@ -43,6 +43,11 @@ public class ExceptionMappers {
         return RestResponse.status(Status.BAD_REQUEST, new ValidationFailed(e.getMessage()));
     }
 
+    @ServerExceptionMapper(IllegalArgumentException.class)
+    public RestResponse<IllegalArgumentResponse> illegalArgument(IllegalArgumentException e) {
+        return RestResponse.status(Status.BAD_REQUEST, new IllegalArgumentResponse(e.getMessage()));
+    }
+
     @RegisterForReflection
     public record UnauthorizedResponse(String message, boolean allowRegistrations) {}
 
@@ -51,4 +56,7 @@ public class ExceptionMappers {
 
     @RegisterForReflection
     public record ValidationFailed(String message) {}
+
+    @RegisterForReflection
+    public record IllegalArgumentResponse(String message) {}
 }

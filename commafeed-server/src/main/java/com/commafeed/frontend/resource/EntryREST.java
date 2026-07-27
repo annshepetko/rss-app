@@ -2,8 +2,12 @@ package com.commafeed.frontend.resource;
 
 import com.commafeed.backend.dao.FeedEntryTagDAO;
 import com.commafeed.backend.model.User;
+import com.commafeed.backend.service.FeedEntryAlternativeService;
 import com.commafeed.backend.service.FeedEntryService;
 import com.commafeed.backend.service.FeedEntryTagService;
+import com.commafeed.backend.service.GenerateAlternativeCommand;
+import com.commafeed.frontend.model.GenerateAlternativeResponse;
+import com.commafeed.frontend.model.request.GenerateAlternativeRequest;
 import com.commafeed.frontend.model.request.MarkRequest;
 import com.commafeed.frontend.model.request.MultipleMarkRequest;
 import com.commafeed.frontend.model.request.StarRequest;
@@ -19,6 +23,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -41,6 +46,7 @@ public class EntryREST {
     private final FeedEntryTagDAO feedEntryTagDAO;
     private final FeedEntryService feedEntryService;
     private final FeedEntryTagService feedEntryTagService;
+    private final FeedEntryAlternativeService feedEntryAlternativeService;
 
     @Path("/mark")
     @POST
@@ -119,5 +125,27 @@ public class EntryREST {
         feedEntryTagService.updateTags(user, req.getEntryId(), req.getTags());
 
         return Response.ok().build();
+    }
+
+    @Path("/{id}/generate-alternative")
+    @POST
+    @Transactional
+    @Operation(
+            summary = "Generate alternative title or content using LLM",
+            description =
+                    "Generate an alternative version of title or content for an entry using LLM")
+    public Response generateAlternative(
+            @Parameter(description = "entry id", required = true) @PathParam("id") Long id,
+            @Valid @Parameter(description = "Generate Alternative Request", required = true)
+                    GenerateAlternativeRequest req) {
+        Preconditions.checkNotNull(req);
+
+        User user = authenticationContext.getCurrentUser();
+        GenerateAlternativeCommand command =
+                new GenerateAlternativeCommand(id, req.getTarget(), req.getPrompt());
+        GenerateAlternativeResponse response =
+                feedEntryAlternativeService.generateAlternative(user, command);
+
+        return Response.ok(response).build();
     }
 }

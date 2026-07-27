@@ -52,6 +52,14 @@ public interface CommaFeedConfiguration {
     /** Google Auth key for fetching Youtube channel favicons. */
     Optional<String> googleAuthKey();
 
+    /** Google Gemini API key for generating entry alternatives. */
+    Optional<String> geminiApiKey();
+
+    /** Google Gemini API endpoint URL. */
+    @WithDefault(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
+    String geminiApiUrl();
+
     /** HTTP client configuration */
     @ConfigDocSection
     HttpClient httpClient();

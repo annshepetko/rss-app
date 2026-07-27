@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<changeSet id="create-notes-table" author="commafeed">
+
+		<createTable tableName="FEEDENTRYNOTES">
+			<column name="id" type="BIGINT">
+				<constraints primaryKey="true" nullable="false"/>
+			</column>
+
+			<column name="user_id" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+
+			<column name="entry_id" type="BIGINT">
+				<constraints nullable="false"/>
+			</column>
+
+			<column name="comment" type="VARCHAR(1000)">
+				<constraints nullable="false"/>
+			</column>
+
+			<column name="rating" type="INT">
+				<constraints nullable="false"/>
+			</column>
+		</createTable>
+
+		<addForeignKeyConstraint
+				constraintName="fk_feedentrynote_user"
+				baseTableName="FEEDENTRYNOTES"
+				baseColumnNames="user_id"
+				referencedTableName="USERS"
+				referencedColumnNames="id"/>
+
+		<addForeignKeyConstraint
+				constraintName="fk_feedentrynote_entry"
+				baseTableName="FEEDENTRYNOTES"
+				baseColumnNames="entry_id"
+				referencedTableName="FEEDENTRIES"
+				referencedColumnNames="id"/>
+
+		<createIndex
+				tableName="FEEDENTRYNOTES"
+				indexName="idx_feedentrynote_user">
+			<column name="user_id"/>
+		</createIndex>
+
+		<createIndex
+				tableName="FEEDENTRYNOTES"
+				indexName="idx_feedentrynote_entry">
+			<column name="entry_id"/>
+		</createIndex>
+
+		<createIndex
+				tableName="FEEDENTRYNOTES"
+				indexName="idx_feedentrynote_user_entry">
+			<column name="user_id"/>
+			<column name="entry_id"/>
+		</createIndex>
+
+		<modifySql dbms="mysql">
+			<append value=" ENGINE INNODB CHARACTER SET utf8mb4"/>
+		</modifySql>
+
+	</changeSet>
+</databaseChangeLog>
