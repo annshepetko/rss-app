@@ -1,99 +1,128 @@
+# Getting Started
 
-# Implemented functionality
+## Preparing demo data
 
-## Feed Entry Notes
+To test the implemented functionality, a demo user and demo feed data are required.
 
-Added functionality for creating and retrieving personal notes attached to feed entries.
+### 1. Start the application
 
-Implemented:
-
-* Creating a note for a feed entry
-* Retrieving all notes belonging to the authenticated user
-* Retrieving a single note by ID
-* User-level authorization for notes
-
-Notes are linked to:
-
-* User
-* Feed entry
-* Comment text
-* Rating
-
-Only authenticated users with the `USER` role can access note endpoints.
+Run the application normally.
 
 ---
 
-# API Usage Flow
+### 2. Create the initial user
 
-## 1. Register a user
-
-Create a new user account.
-
-### Request
+Send the following request:
 
 ```http
-POST /rest/user/register
+POST http://localhost:8083/rest/user/initialSetup
 Content-Type: application/json
 
 {
-  "name": "test-user",
-  "password": "password123",
-  "email": "test@example.com"
+  "name": "tesddatuassqwerqser",
+  "password": "Passqeword123!",
+  "email": "teaeisddasajorgqewjrg9studser@example.com"
 }
 ```
 
-### Response
+This creates the user required for the demo data script.
 
-```http
-200 OK
+---
+
+### 3. Configure authentication in Postman
+
+All protected endpoints use **HTTP Basic Authentication**.
+
+Configure Postman:
+
+- Authorization → **Basic Auth**
+- Username:
+
+```
+tesddatuassqwerqser
+```
+
+- Password:
+
+```
+Passqeword123!
+```
+
+These credentials should be used for all authenticated requests.
+
+---
+
+### 4. Stop the application
+
+After the user has been created, stop the application.
+
+---
+
+### 5. Execute the demo data script
+
+The demo data script is located at:
+
+```
+src/main/resources/data/demo-data.sql
+```
+
+The script inserts sample feeds, subscriptions and feed entries required for testing.
+
+#### Connecting to the H2 database from IntelliJ IDEA
+
+1. Open **View → Tool Windows → Database**.
+2. Click **+** → **Data Source** → **H2**.
+3. Configure the connection using the same values defined in `application.properties`:
+
+- JDBC URL
+- Username
+- Password
+
+4. Test the connection.
+5. Open the SQL Console.
+6. Execute:
+
+```
+src/main/resources/data/demo-data.sql
 ```
 
 ---
-## 2. Authenticate user
 
-The API endpoints require authentication.
+### 6. Start the application again
 
-When testing the API using Postman:
+Restart the application.
 
-1. Open the **Authorization** tab.
-2. Select **Basic Auth** as the authentication type.
-3. Provide the credentials of the registered user:
+The API is now ready for testing.
 
-    * Username: the value used during registration (`name`)
-    * Password: the password used during registration
+The demo data contains sample feed entries with IDs referenced in the examples below.
+# Testing the API
 
-Postman will automatically add the `Authorization` header to requests.
+After completing the setup described above, the application is ready for testing.
 
-Example:
+The examples below assume:
 
-```http
-Authorization: Basic <encoded_credentials>
-```
+- the application is running on `http://localhost:8083`
+- HTTP Basic Authentication is configured in Postman
+- the demo data has been imported successfully
 
-After configuring Basic Auth, authenticated endpoints can be accessed:
+The demo data creates a sample feed entry with **ID = 1**, which is used in the following requests.
 
-* `POST /rest/note`
-* `GET /rest/note`
-* `GET /rest/note/{id}`
-* `POST /rest/entry/{id}/generate-alternative`
-
-All these endpoints require a user with the `USER` role.
-
-All these endpoints require a user with the USER role.
 ---
 
-# Notes API
+# Feed Entry Notes
 
-## 3. Create a note for a feed entry
+## Create a note
 
-Creates a new note associated with a feed entry.
+Creates a personal note for a feed entry.
 
 ### Request
 
 ```http
 POST /rest/note
 Content-Type: application/json
+```
 
+```json
 {
   "entryId": 1,
   "comment": "Interesting article about Java",
@@ -109,9 +138,9 @@ Content-Type: application/json
 
 ---
 
-## 4. Get all user notes
+## Get all notes
 
-Returns all notes created by the current authenticated user.
+Returns all notes created by the authenticated user.
 
 ### Request
 
@@ -134,7 +163,7 @@ GET /rest/note
 
 ---
 
-## 5. Get note by ID
+## Get note by ID
 
 Returns a single note belonging to the authenticated user.
 
@@ -155,7 +184,7 @@ GET /rest/note/1
 }
 ```
 
-If the note does not exist or does not belong to the current user:
+If the note does not exist or belongs to another user:
 
 ```http
 404 Not Found
@@ -165,29 +194,27 @@ If the note does not exist or does not belong to the current user:
 
 # AI Alternative Generation
 
-## Generate alternative title or content using LLM
-
-Added an endpoint that generates an alternative version of a feed entry title or content using an LLM.
+The application also provides an endpoint for generating an alternative title or content for a feed entry using an LLM.
 
 The endpoint:
 
-* Loads the feed entry
-* Extracts the selected target (`TITLE` or `CONTENT`)
-* Sends the original text and user prompt to the LLM client
-* Returns the generated alternative together with the original content
+- loads the requested feed entry
+- extracts either its title or content
+- sends the selected text together with the user prompt to the LLM
+- returns both the original text and the generated alternative
 
 ---
 
-## 6. Generate alternative title
-
-Example: rewrite a feed entry title.
+## Generate an alternative title
 
 ### Request
 
 ```http
 POST /rest/entry/1/generate-alternative
 Content-Type: application/json
+```
 
+```json
 {
   "target": "TITLE",
   "prompt": "Make the title shorter and more engaging"
@@ -211,16 +238,16 @@ Content-Type: application/json
 
 ---
 
-## 7. Generate alternative content
-
-Example: rewrite the article content.
+## Generate alternative content
 
 ### Request
 
 ```http
 POST /rest/entry/1/generate-alternative
 Content-Type: application/json
+```
 
+```json
 {
   "target": "CONTENT",
   "prompt": "Summarize this article in a clear way"
@@ -237,56 +264,30 @@ Content-Type: application/json
     "content": "Original article content"
   },
   "target": "CONTENT",
-  "prompt": "Summarize this article in a clear way",
+  "prompt": "Summarize this article in a clear way"
+,
   "generatedAlternative": "Generated article summary"
 }
 ```
 
 ---
 
-# Implementation details
+# Authorization
 
-## FeedEntryNoteREST
+All endpoints described above require authentication using **HTTP Basic Authentication**.
 
-Responsible for exposing note-related REST endpoints:
+Use the credentials created during the initial setup:
 
-* `POST /rest/note`
-* `GET /rest/note`
-* `GET /rest/note/{id}`
+Username:
 
-The resource validates requests, obtains the authenticated user and delegates business logic to `FeedEntryNoteService`.
+```
+tesddatuassqwerqser
+```
 
-## FeedEntryNoteService
+Password:
 
-Responsible for note business logic:
+```
+Passqeword123!
+```
 
-* Validates that the feed entry exists
-* Creates `FeedEntryNote`
-* Retrieves notes by user
-* Retrieves a specific note owned by the user
-
----
-
-## FeedEntryAlternativeService
-
-Responsible for AI-powered content generation:
-
-* Finds the feed entry
-* Extracts title or content depending on requested target
-* Calls the LLM client
-* Builds the response containing original and generated content
-
----
-
-## Database
-
-Added database migration for storing feed entry notes.
-
-The note entity stores:
-
-* User reference
-* Feed entry reference
-* Comment
-* Rating
-
-Database migrations are executed automatically on application startup using Flyway.
+The authenticated user must have the `USER` role.
