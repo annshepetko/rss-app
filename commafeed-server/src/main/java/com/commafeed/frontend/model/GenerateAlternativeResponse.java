@@ -1,5 +1,6 @@
 package com.commafeed.frontend.model;
 
+import com.commafeed.frontend.OriginalContentDto;
 import com.commafeed.frontend.model.request.Target;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
@@ -12,8 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 @RegisterForReflection
 public class GenerateAlternativeResponse implements Serializable {
 
-    @Schema(description = "the original feed entry", required = true)
-    private Entry originalEntry;
+    private OriginalContentDto original;
 
     @Schema(description = "target field: 'title' or 'content'", required = true)
     private Target target;

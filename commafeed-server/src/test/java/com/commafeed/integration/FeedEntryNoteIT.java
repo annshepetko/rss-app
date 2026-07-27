@@ -12,9 +12,8 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import java.util.Optional;
-
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,17 +29,13 @@ class FeedEntryNoteIT extends BaseIT {
 
     @Inject EntityManager entityManager;
 
-
     @BeforeEach
     void setup() {
         initialSetup(TestConstants.ADMIN_USERNAME, TestConstants.ADMIN_PASSWORD);
 
         RestAssured.authentication =
                 RestAssured.preemptive()
-                        .basic(
-                                TestConstants.ADMIN_USERNAME,
-                                TestConstants.ADMIN_PASSWORD
-                        );
+                        .basic(TestConstants.ADMIN_USERNAME, TestConstants.ADMIN_PASSWORD);
     }
 
     @Test

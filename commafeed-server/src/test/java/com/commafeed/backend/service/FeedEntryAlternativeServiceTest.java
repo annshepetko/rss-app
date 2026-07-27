@@ -91,8 +91,8 @@ class FeedEntryAlternativeServiceTest {
         Assertions.assertEquals("Rewrite professionally", response.getPrompt());
         Assertions.assertEquals("Generated title", response.getGeneratedAlternative());
 
-        Assertions.assertNotNull(response.getOriginalEntry());
-        Assertions.assertEquals("100", response.getOriginalEntry().getId());
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals("100", response.getOriginal().getEntryId());
 
         Mockito.verify(feedEntryDAO).findById(100L);
 

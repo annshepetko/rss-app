@@ -1,5 +1,7 @@
 package com.commafeed;
 
+import com.commafeed.backend.exception.LLMErrorResponse;
+import com.commafeed.exceptions.LLMException;
 import com.commafeed.security.CookieService;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.quarkus.security.AuthenticationFailedException;
@@ -36,6 +38,11 @@ public class ExceptionMappers {
         return ResponseBuilder.create(Status.UNAUTHORIZED, new AuthenticationFailed(e.getMessage()))
                 .cookie(logoutCookie)
                 .build();
+    }
+
+    @ServerExceptionMapper(LLMException.class)
+    public RestResponse<LLMErrorResponse> llmException(LLMException e) {
+        return RestResponse.status(Status.BAD_GATEWAY, new LLMErrorResponse(e.getMessage()));
     }
 
     @ServerExceptionMapper(ValidationException.class)

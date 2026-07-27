@@ -5,9 +5,9 @@ import com.commafeed.backend.dao.UserDAO;
 import com.commafeed.backend.model.User;
 import com.commafeed.backend.service.FeedEntryAlternativeService;
 import com.commafeed.backend.service.GenerateAlternativeCommand;
-import com.commafeed.backend.service.internal.GeminiClient;
+import com.commafeed.backend.service.internal.GroqClient;
+import com.commafeed.frontend.OriginalContentDto;
 import com.commafeed.frontend.model.Entries;
-import com.commafeed.frontend.model.Entry;
 import com.commafeed.frontend.model.GenerateAlternativeResponse;
 import com.commafeed.frontend.model.request.Target;
 import io.quarkus.test.junit.QuarkusMock;
@@ -27,16 +27,16 @@ class FeedEntryAlternativeServiceTest extends BaseIT {
 
     @Inject UserDAO userDAO;
 
-    private GeminiClient geminiClient;
+    private GroqClient geminiClient;
 
     @BeforeEach
     void setup() {
-        geminiClient = Mockito.mock(GeminiClient.class);
+        geminiClient = Mockito.mock(GroqClient.class);
 
         Mockito.when(geminiClient.generateAlternative(Mockito.anyString(), Mockito.anyString()))
                 .thenReturn("Generated title");
 
-        QuarkusMock.installMockForType(geminiClient, GeminiClient.class);
+        QuarkusMock.installMockForType(geminiClient, GroqClient.class);
 
         initialSetup(TestConstants.ADMIN_USERNAME, TestConstants.ADMIN_PASSWORD);
 
@@ -73,11 +73,11 @@ class FeedEntryAlternativeServiceTest extends BaseIT {
 
         Assertions.assertEquals("Generated title", response.getGeneratedAlternative());
 
-        Entry original = response.getOriginalEntry();
+        OriginalContentDto original = response.getOriginal();
 
         Assertions.assertNotNull(original);
 
-        Assertions.assertEquals(String.valueOf(entryId), original.getId());
+        Assertions.assertEquals(String.valueOf(entryId), original.getEntryId());
 
         Mockito.verify(geminiClient)
                 .generateAlternative("Rewrite professionally", original.getTitle());

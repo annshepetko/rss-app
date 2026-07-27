@@ -21,19 +21,21 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 @RequiredArgsConstructor
 @ApplicationScoped
-public class GeminiClient implements LLMClient {
+public class GroqClient implements LLMClient {
 
     private final CommaFeedConfiguration config;
     private final ObjectMapper objectMapper;
+
     private final HttpClient httpClient =
             HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
 
     @Override
     public String generateAlternative(String prompt, String originalText) {
+
         String apiKey = getApiKey();
+
         if (StringUtils.isBlank(apiKey)) {
-            throw new LLMException(
-                    "Gemini API key is not configured. Please set COMMAFEED_GEMINI_API_KEY or GEMINI_API_KEY environment variable.");
+            throw new LLMException("Groq API key is not configured.");
         }
 
         String combinedText =
@@ -47,19 +49,27 @@ public class GeminiClient implements LLMClient {
                         + "Return only the rewritten text.";
 
         try {
+
             ObjectNode requestJson = objectMapper.createObjectNode();
-            ArrayNode contents = requestJson.putArray("contents");
-            ObjectNode contentObj = contents.addObject();
-            ArrayNode parts = contentObj.putArray("parts");
-            ObjectNode partObj = parts.addObject();
-            partObj.put("text", combinedText);
+            requestJson.put("model", "llama-3.3-70b-versatile");
+            requestJson.put("temperature", 0.7);
+
+            ArrayNode messages = requestJson.putArray("messages");
+
+            ObjectNode system = messages.addObject();
+            system.put("role", "system");
+            system.put("content", "You rewrite text. Return only the rewritten text.");
+
+            ObjectNode user = messages.addObject();
+            user.put("role", "user");
+            user.put("content", combinedText);
 
             String requestBody = objectMapper.writeValueAsString(requestJson);
-            String endpointUrl = config.geminiApiUrl() + "?key=" + apiKey;
 
             HttpRequest request =
                     HttpRequest.newBuilder()
-                            .uri(URI.create(endpointUrl))
+                            .uri(URI.create(config.groqApiUrl()))
+                            .header("Authorization", "Bearer " + apiKey)
                             .header("Content-Type", "application/json")
                             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                             .timeout(Duration.ofSeconds(30))
@@ -70,18 +80,20 @@ public class GeminiClient implements LLMClient {
 
             if (response.statusCode() != 200) {
                 log.error(
-                        "Gemini API error status: {}, body: {}",
+                        "Groq API error status: {}, body: {}",
                         response.statusCode(),
                         response.body());
+
                 throw new LLMException(
-                        "Gemini API call failed with status code: " + response.statusCode());
+                        "Groq API call failed (" + response.statusCode() + "): " + response.body());
             }
 
             JsonNode rootNode = objectMapper.readTree(response.body());
-            JsonNode textNode = rootNode.at("/candidates/0/content/parts/0/text");
+
+            JsonNode textNode = rootNode.path("choices").get(0).path("message").path("content");
 
             if (textNode.isMissingNode() || StringUtils.isBlank(textNode.asText())) {
-                throw new LLMException("Gemini API returned an empty or invalid response.");
+                throw new LLMException("Groq API returned an empty response.");
             }
 
             return textNode.asText().trim();
@@ -89,23 +101,18 @@ public class GeminiClient implements LLMClient {
         } catch (LLMException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Failed to generate alternative content using Gemini API", e);
-            throw new LLMException(
-                    "Error communicating with Gemini LLM service: " + e.getMessage());
+            log.error("Failed to call Groq API", e);
+            throw new LLMException("Error communicating with Groq API: " + e.getMessage());
         }
     }
 
     private String getApiKey() {
-        Optional<String> configuredKey = config.geminiApiKey();
+        Optional<String> configuredKey = config.groqApiKey();
+
         if (configuredKey.isPresent() && StringUtils.isNotBlank(configuredKey.get())) {
             return configuredKey.get();
         }
 
-        String envKey = System.getenv("COMMAFEED_GEMINI_API_KEY");
-        if (StringUtils.isNotBlank(envKey)) {
-            return envKey;
-        }
-
-        return System.getenv("GEMINI_API_KEY");
+        return System.getenv("GROQ_API_KEY");
     }
 }

@@ -52,13 +52,12 @@ public interface CommaFeedConfiguration {
     /** Google Auth key for fetching Youtube channel favicons. */
     Optional<String> googleAuthKey();
 
-    /** Google Gemini API key for generating entry alternatives. */
-    Optional<String> geminiApiKey();
+    /** Groq API key used for generating entry alternatives. */
+    Optional<String> groqApiKey();
 
-    /** Google Gemini API endpoint URL. */
-    @WithDefault(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
-    String geminiApiUrl();
+    /** Groq API endpoint URL. */
+    @WithDefault("https://api.groq.com/openai/v1/chat/completions")
+    String groqApiUrl();
 
     /** HTTP client configuration */
     @ConfigDocSection

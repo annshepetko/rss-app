@@ -9,6 +9,7 @@ import com.commafeed.backend.model.FeedEntryContent;
 import com.commafeed.backend.model.FeedEntryStatus;
 import com.commafeed.backend.model.FeedSubscription;
 import com.commafeed.backend.model.User;
+import com.commafeed.frontend.OriginalContentDto;
 import com.commafeed.frontend.model.Entry;
 import com.commafeed.frontend.model.GenerateAlternativeResponse;
 import com.commafeed.frontend.model.request.Target;
@@ -35,6 +36,8 @@ public class FeedEntryAlternativeService {
 
         String generatedAlternative =
                 llmClient.generateAlternative(command.prompt(), textToRewrite);
+
+        System.out.println(generatedAlternative);
 
         Entry entryModel = buildEntry(user, entry);
 
@@ -85,7 +88,10 @@ public class FeedEntryAlternativeService {
             Entry originalEntry, GenerateAlternativeCommand command, String generatedAlternative) {
 
         GenerateAlternativeResponse response = new GenerateAlternativeResponse();
-        response.setOriginalEntry(originalEntry);
+
+        response.setOriginal(
+                new OriginalContentDto(
+                        originalEntry.getId(), originalEntry.getTitle(), originalEntry.getTitle()));
         response.setTarget(command.target());
         response.setPrompt(command.prompt());
         response.setGeneratedAlternative(generatedAlternative);
