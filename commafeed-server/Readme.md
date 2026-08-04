@@ -22,6 +22,19 @@ Each note contains:
 
 Only authenticated users with the `USER` role can access the note endpoints.
 
+## My AI Workflow
+
+This project was implemented using an AI-driven development workflow.
+
+I started by analyzing the requirements with ChatGPT to clarify the expected functionality, architecture, and implementation details. After gathering the necessary context, I used ChatGPT to prepare structured prompts for Google Antigravity instead of writing the implementation directly.
+
+At the beginning of the development process, I provided Antigravity with the project's architectural constraints and coding conventions. In particular, I instructed it to follow the existing REST → Service → DAO → Entity layering, reuse existing project patterns, and keep the implementation consistent with the existing codebase.
+
+Development was performed incrementally rather than asking the AI to generate the entire solution at once. After each generated change, I manually reviewed the implementation, verified that it followed CommaFeed's conventions, and adjusted the code whenever improvements or corrections were needed.
+
+Throughout the task, AI served as a development assistant, while architectural decisions, code review, validation, and the final implementation remained my responsibility.
+
+
 ---
 
 ### AI Alternative Generation
