@@ -79,6 +79,10 @@ public interface CommaFeedConfiguration {
     @ConfigDocSection
     Users users();
 
+    /** Keycloak settings. */
+    @ConfigDocSection
+    Keycloak keycloak();
+
     /** Websocket settings. */
     @ConfigDocSection
     Websocket websocket();
@@ -363,5 +367,30 @@ public interface CommaFeedConfiguration {
          */
         @WithDefault("30s")
         Duration treeReloadInterval();
+    }
+
+    interface Keycloak {
+        /** Keycloak base URL */
+        @WithDefault("http://localhost:8081")
+        String url();
+
+        /** Keycloak realm */
+        @WithDefault("commafeed")
+        String realm();
+
+        /** Keycloak client ID */
+        @WithDefault("commafeed-service")
+        String clientId();
+
+        /** Keycloak client secret */
+        Optional<String> clientSecret();
+
+        /** Keycloak connection timeout */
+        @WithDefault("5s")
+        Duration connectTimeout();
+
+        /** Keycloak request timeout */
+        @WithDefault("5s")
+        Duration requestTimeout();
     }
 }

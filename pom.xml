@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.commafeed</groupId>
-	<artifactId>commafeed</artifactId>
+	<artifactId>commafeed-app</artifactId>
 	<version>7.2.0</version>
 	<name>CommaFeed</name>
 	<packaging>pom</packaging>

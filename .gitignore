@@ -40,3 +40,7 @@ src/main/app/lib
 
 # Macs
 *.DS_Store
+
+# Environment files
+.env
+*.env

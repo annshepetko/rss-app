@@ -16,6 +16,7 @@ import { Header } from "@/components/header/Header"
 import { Tree } from "@/components/sidebar/Tree"
 import { useI18n } from "@/i18n"
 import { AdminUsersPage } from "@/pages/admin/AdminUsersPage"
+import { KeycloakUserDirectoryPage } from "@/pages/admin/KeycloakUserDirectoryPage"
 import { MetricsPage } from "@/pages/admin/MetricsPage"
 import { AboutPage } from "@/pages/app/AboutPage"
 import { AddPage } from "@/pages/app/AddPage"
@@ -104,6 +105,7 @@ function AppRoutes() {
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="admin">
                     <Route path="users" element={<AdminUsersPage />} />
+                    <Route path="directory" element={<KeycloakUserDirectoryPage />} />
                     <Route path="metrics" element={<MetricsPage />} />
                 </Route>
                 <Route path="about" element={<AboutPage />} />

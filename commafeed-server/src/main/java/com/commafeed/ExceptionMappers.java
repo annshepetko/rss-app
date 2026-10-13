@@ -1,6 +1,8 @@
 package com.commafeed;
 
 import com.commafeed.backend.exception.LLMErrorResponse;
+import com.commafeed.exceptions.KeycloakUpstreamException;
+import com.commafeed.exceptions.KeycloakUserNotFoundException;
 import com.commafeed.exceptions.LLMException;
 import com.commafeed.security.CookieService;
 import io.quarkus.runtime.annotations.RegisterForReflection;
@@ -55,6 +57,17 @@ public class ExceptionMappers {
         return RestResponse.status(Status.BAD_REQUEST, new IllegalArgumentResponse(e.getMessage()));
     }
 
+    @ServerExceptionMapper(KeycloakUserNotFoundException.class)
+    public RestResponse<KeycloakErrorResponse> keycloakUserNotFound(
+            KeycloakUserNotFoundException e) {
+        return RestResponse.status(Status.NOT_FOUND, new KeycloakErrorResponse(e.getMessage()));
+    }
+
+    @ServerExceptionMapper(KeycloakUpstreamException.class)
+    public RestResponse<KeycloakErrorResponse> keycloakUpstream(KeycloakUpstreamException e) {
+        return RestResponse.status(Status.BAD_GATEWAY, new KeycloakErrorResponse(e.getMessage()));
+    }
+
     @RegisterForReflection
     public record UnauthorizedResponse(String message, boolean allowRegistrations) {}
 
@@ -66,4 +79,7 @@ public class ExceptionMappers {
 
     @RegisterForReflection
     public record IllegalArgumentResponse(String message) {}
+
+    @RegisterForReflection
+    public record KeycloakErrorResponse(String message) {}
 }

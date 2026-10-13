@@ -338,3 +338,17 @@ export interface AuthenticationError {
     message: string
     allowRegistrations: boolean
 }
+
+export interface KeycloakUserResponse {
+    keycloakId: string
+    username: string
+    email?: string
+    firstName?: string
+    lastName?: string
+    enabled: boolean
+}
+
+export interface KeycloakUserDetailResponse extends KeycloakUserResponse {
+    roles?: string[]
+    groups?: string[]
+}

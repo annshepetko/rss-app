@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>com.commafeed</groupId>
-		<artifactId>commafeed</artifactId>
+		<artifactId>commafeed-app</artifactId>
 		<version>7.2.0</version>
 	</parent>
 	<artifactId>commafeed-server</artifactId>

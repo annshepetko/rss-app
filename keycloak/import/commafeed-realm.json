@@ -1,0 +1,163 @@
+{
+  "realm": "commafeed",
+  "displayName": "CommaFeed",
+  "enabled": true,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Administrator role"
+      },
+      {
+        "name": "editor",
+        "description": "Editor role"
+      },
+      {
+        "name": "user",
+        "description": "Standard user role"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "id": "10000000-0000-0000-0000-000000000001",
+      "name": "Engineering",
+      "path": "/Engineering"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000002",
+      "name": "Marketing",
+      "path": "/Marketing"
+    },
+    {
+      "id": "10000000-0000-0000-0000-000000000003",
+      "name": "Operations",
+      "path": "/Operations"
+    }
+  ],
+  "clients": [
+    {
+      "id": "20000000-0000-0000-0000-000000000001",
+      "clientId": "commafeed-service",
+      "name": "CommaFeed Service",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "secret",
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect"
+    }
+  ],
+  "users": [
+    {
+      "id": "a1000000-0000-0000-0000-000000000001",
+      "username": "alice",
+      "email": "alice@example.com",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": [
+        "admin",
+        "user"
+      ],
+      "groups": [
+        "/Engineering"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "a1000000-0000-0000-0000-000000000002",
+      "username": "bob",
+      "email": "bob@example.com",
+      "firstName": "Bob",
+      "lastName": "Jones",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": [
+        "editor",
+        "user"
+      ],
+      "groups": [
+        "/Marketing"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "a1000000-0000-0000-0000-000000000003",
+      "username": "charlie",
+      "email": "charlie@example.com",
+      "firstName": "Charlie",
+      "lastName": "Brown",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": [
+        "user"
+      ],
+      "groups": [
+        "/Engineering"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "a1000000-0000-0000-0000-000000000004",
+      "username": "david",
+      "email": "david@example.com",
+      "firstName": "David",
+      "lastName": "Miller",
+      "enabled": false,
+      "emailVerified": false,
+      "realmRoles": [
+        "user"
+      ],
+      "groups": [
+        "/Operations"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password123",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "a1000000-0000-0000-0000-000000000005",
+      "username": "service-account-commafeed-service",
+      "enabled": true,
+      "email": "service-account-commafeed-service@placeholder.org",
+      "serviceAccountClientId": "commafeed-service",
+      "clientRoles": {
+        "realm-management": [
+          "view-users",
+          "query-users",
+          "query-groups"
+        ]
+      }
+    }
+  ]
+}

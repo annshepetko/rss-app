@@ -117,6 +117,14 @@ export const client = {
         deleteUser: async (req: IDRequest) => await axiosInstance.post("admin/user/delete", req),
         getMetrics: async () => await axiosInstance.get<Metrics>("admin/metrics"),
     },
+    keycloakAdmin: {
+        getUsers: async (search?: string, first = 0, max = 20) =>
+            await axiosInstance.get<import("./types").KeycloakUserResponse[]>("admin/directory/users", {
+                params: { search, first, max },
+            }),
+        getUserDetails: async (keycloakId: string) =>
+            await axiosInstance.get<import("./types").KeycloakUserDetailResponse>(`admin/directory/users/${keycloakId}`),
+    },
 }
 
 /**

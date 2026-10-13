@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url"
 import { lingui } from "@lingui/vite-plugin"
 import babel from "@rolldown/plugin-babel"
 import react, { reactCompilerPreset } from "@vitejs/plugin-react"
@@ -37,7 +38,9 @@ export default defineConfig(() => ({
         },
     },
     resolve: {
-        tsconfigPaths: true,
+        alias: {
+            "@": fileURLToPath(new URL("./src", import.meta.url)),
+        },
     },
     legacy: {
         // required for websocket-heartbeat-js
